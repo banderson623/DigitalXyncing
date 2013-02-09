@@ -1,6 +1,5 @@
 package com.digitalxyncing.communication.impl;
 
-import com.digitalxyncing.communication.ChannelListener;
 import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
 import org.zeromq.ZMQ;
@@ -8,9 +7,9 @@ import org.zeromq.ZMQ;
 import java.util.Map;
 
 /**
- * Concrete implementation of {@link ChannelListener} which relies on ZeroMQ for communication.
+ * Concrete implementation of {@link AbstractChannelListener} which relies on ZeroMQ for communication.
  */
-public class ZmqChannelListener extends ChannelListener {
+public class ZmqChannelListener extends AbstractChannelListener {
 
     private int mType;
     private ZMQ.Socket mSocket;
@@ -18,19 +17,30 @@ public class ZmqChannelListener extends ChannelListener {
     /**
      * Creates a new {@code ZmqChannelListener} instance.
      *
-     * @param address                  the address to connect to
+     * @param endpoint              the {@link Endpoint} this {@code AbstractChannelListener} belongs to
+     * @param address               the address to connect to
      * @param port                  the port to connect to
+     * @param type                  the ZMQ socket type
      * @param threadPoolSize        the number of worker threads to use to handle messages
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(String address, int port, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        this(ZMQ.SUB, threadPoolSize, messageHandlerFactory);
+    public ZmqChannelListener(Endpoint endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
+        this(endpoint, type, threadPoolSize, messageHandlerFactory);
         mPeers.put(address, port);
     }
 
-    public ZmqChannelListener(int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        super(threadPoolSize, messageHandlerFactory);
+    /**
+     * Creates a new {@code ZmqChannelListener} instance.
+     *
+     * @param endpoint              the {@link Endpoint} this {@code AbstractChannelListener} belongs to
+     * @param type                  the ZMQ socket type
+     * @param threadPoolSize        the number of worker threads to use to handle messages
+     * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
+     *                              {@link com.digitalxyncing.communication.MessageHandler} instances
+     */
+    public ZmqChannelListener(Endpoint endpoint, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
+        super(endpoint, threadPoolSize, messageHandlerFactory);
         mType = type;
     }
 
@@ -44,7 +54,7 @@ public class ZmqChannelListener extends ChannelListener {
     }
 
     @Override
-    protected void listen() {
+    public void listen() {
         mTerminate = false;
         ZMQ.Context context = ZMQ.context(1);
         mSocket = context.socket(mType);
@@ -57,7 +67,7 @@ public class ZmqChannelListener extends ChannelListener {
             mSocket.subscribe("".getBytes());
         while (!mTerminate) {
             byte[] message = mSocket.recv(0);
-            mThreadPool.execute(mMessageHandlerFactory.build(message));
+            mThreadPool.execute(mMessageHandlerFactory.build(mEndpoint, message));
         }
         mSocket.close();
         context.term();

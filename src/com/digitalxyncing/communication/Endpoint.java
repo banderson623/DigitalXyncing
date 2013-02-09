@@ -37,6 +37,6 @@ public interface Endpoint {
      *
      * @param data the message data to send
      */
-    void send(byte[] data);
+    boolean send(byte[] data);
 
 }
