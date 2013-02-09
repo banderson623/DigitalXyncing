@@ -9,7 +9,8 @@ public interface Endpoint {
     public static final String SCHEME = "tcp://";
 
     /**
-     * Opens an outbound channel for transmitting messages.
+     * Opens an outbound channel for transmitting messages. This method is idempotent, meaning it
+     * has no effect if an outbound channel is already open.
      */
     void openOutboundChannel();
 
@@ -20,12 +21,10 @@ public interface Endpoint {
     void closeOutboundChannel();
 
     /**
-     * Opens an inbound channel for receiving messages.
-     *
-     * @param messageHandlerFactory the {@link MessageHandlerFactory} which will build
-     *                              {@link MessageHandler} instances for received messages.
+     * Opens an inbound channel for receiving messages. This method is idempotent, meaning it
+     * has no effect if an inbound channel is already open.
      */
-    void openInboundChannel(MessageHandlerFactory messageHandlerFactory);
+    void openInboundChannel();
 
     /**
      * Closes the inbound channel, releasing any sockets or other system resources. This method is

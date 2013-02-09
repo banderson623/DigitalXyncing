@@ -22,12 +22,14 @@ public class ZmqClientEndpoint implements Endpoint {
     /**
      * Creates a new {@code ZmqClientEndpoint} instance.
      *
-     * @param host the host address to connect to
-     * @param port the host port to connect to
+     * @param host                  the host address to connect to
+     * @param port                  the host port to connect to
+     * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      */
-    public ZmqClientEndpoint(String host, int port) {
+    public ZmqClientEndpoint(String host, int port, MessageHandlerFactory messageHandlerFactory) {
         mHost = host;
         mPort = port;
+        mChannelListener = new ZmqChannelListener(ZMQ.SUB, POOL_SIZE, messageHandlerFactory);
 
     }
 
@@ -47,16 +49,14 @@ public class ZmqClientEndpoint implements Endpoint {
     }
 
     @Override
-    public void openInboundChannel(MessageHandlerFactory messageHandlerFactory) {
-        if (mChannelListener == null) {
-            mChannelListener = new ZmqChannelListener(mHost, mPort, POOL_SIZE, messageHandlerFactory);
+    public void openInboundChannel() {
+        if (!mChannelListener.isAlive())
             mChannelListener.start();
-        }
     }
 
     @Override
     public void closeInboundChannel() {
-        if (mChannelListener != null)
+        if (mChannelListener.isAlive())
             mChannelListener.terminate();
     }
 

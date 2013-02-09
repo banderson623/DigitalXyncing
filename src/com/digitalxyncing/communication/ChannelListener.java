@@ -1,5 +1,7 @@
 package com.digitalxyncing.communication;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,6 +13,7 @@ public abstract class ChannelListener extends Thread {
 
     protected final ExecutorService mThreadPool;
     protected final MessageHandlerFactory mMessageHandlerFactory;
+    protected Map<String, Integer> mPeers;
     protected volatile boolean mTerminate;
 
     /**
@@ -23,6 +26,7 @@ public abstract class ChannelListener extends Thread {
     public ChannelListener(int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
         mMessageHandlerFactory = messageHandlerFactory;
         mThreadPool = Executors.newFixedThreadPool(threadPoolSize);
+        mPeers = new HashMap<String, Integer>();
     }
 
     @Override
@@ -36,6 +40,14 @@ public abstract class ChannelListener extends Thread {
     public void terminate() {
         mTerminate = true;
     }
+
+    /**
+     * Adds the given peer, identified by an address and port, to the {@code ChannelListener}.
+     *
+     * @param address the address of the peer to add
+     * @param port    the port of the peer to add
+     */
+    public abstract void addPeer(String address, int port);
 
     /**
      * Notifies the {@code ChannelListener} to start listening.
