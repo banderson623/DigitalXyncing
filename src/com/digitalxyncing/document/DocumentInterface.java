@@ -1,4 +1,4 @@
-package com.digitalxyncing.interfaces;
+package com.digitalxyncing.document;
 
 /**
  * User: brian_anderson
