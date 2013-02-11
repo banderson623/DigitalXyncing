@@ -6,7 +6,7 @@ package com.digitalxyncing.communication;
  */
 public abstract class MessageHandler implements Runnable {
 
-    protected final byte[] mMessage;
+    protected final byte[] message;
 
     /**
      * Creates a new {@code MessageHandler} instance.
@@ -14,7 +14,7 @@ public abstract class MessageHandler implements Runnable {
      * @param message the message data to handle
      */
     public MessageHandler(byte[] message) {
-        mMessage = message;
+        this.message = message;
     }
 
 }

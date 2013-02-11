@@ -11,8 +11,8 @@ import java.util.Map;
  */
 public class ZmqChannelListener extends AbstractChannelListener {
 
-    private int mType;
-    private ZMQ.Socket mSocket;
+    private int type;
+    private ZMQ.Socket socket;
 
     /**
      * Creates a new {@code ZmqChannelListener} instance.
@@ -27,7 +27,7 @@ public class ZmqChannelListener extends AbstractChannelListener {
      */
     public ZmqChannelListener(Endpoint endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
         this(endpoint, type, threadPoolSize, messageHandlerFactory);
-        mPeers.put(address, port);
+        this.peers.put(address, port);
     }
 
     /**
@@ -41,35 +41,35 @@ public class ZmqChannelListener extends AbstractChannelListener {
      */
     public ZmqChannelListener(Endpoint endpoint, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
         super(endpoint, threadPoolSize, messageHandlerFactory);
-        mType = type;
+        this.type = type;
     }
 
     @Override
     public void addPeer(String address, int port) {
-        if (mSocket != null) {
+        if (socket != null) {
             String connect = Endpoint.SCHEME + address + ':' + port;
-            mSocket.connect(connect);
+            socket.connect(connect);
         }
-        mPeers.put(address, port);
+        peers.put(address, port);
     }
 
     @Override
     public void listen() {
-        mTerminate = false;
+        terminate = false;
         ZMQ.Context context = ZMQ.context(1);
-        mSocket = context.socket(mType);
-        for (Map.Entry<String, Integer> peer : mPeers.entrySet()) {
+        socket = context.socket(type);
+        for (Map.Entry<String, Integer> peer : peers.entrySet()) {
             String connect = Endpoint.SCHEME + peer.getKey() + ':' + peer.getValue();
             System.out.println("Connecting to " + connect);
-            mSocket.connect(connect);
+            socket.connect(connect);
         }
-        if (mType == ZMQ.SUB)
-            mSocket.subscribe("".getBytes());
-        while (!mTerminate) {
-            byte[] message = mSocket.recv(0);
-            mThreadPool.execute(mMessageHandlerFactory.build(mEndpoint, message));
+        if (type == ZMQ.SUB)
+            socket.subscribe("".getBytes());
+        while (!terminate) {
+            byte[] message = socket.recv(0);
+            threadPool.execute(messageHandlerFactory.build(endpoint, message));
         }
-        mSocket.close();
+        socket.close();
         context.term();
     }
 

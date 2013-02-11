@@ -9,10 +9,10 @@ import org.zeromq.ZMQ;
  */
 public abstract class AbstractZmqEndpoint implements Endpoint {
 
-    protected AbstractChannelListener mAbstractChannelListener;
-    protected ZMQ.Socket mSocket;
-    protected int mPort;
-    private ZMQ.Context mContext;
+    protected AbstractChannelListener abstractChannelListener;
+    protected ZMQ.Socket socket;
+    protected int port;
+    private ZMQ.Context context;
 
     /**
      * Creates a new {@code AbstractZmqEndpoint} instance.
@@ -25,8 +25,8 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
     public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        mAbstractChannelListener = new ZmqChannelListener(this, hostAddress, hostPort, type, threadPoolSize, messageHandlerFactory);
-        mPort = port;
+        this.abstractChannelListener = new ZmqChannelListener(this, hostAddress, hostPort, type, threadPoolSize, messageHandlerFactory);
+        this.port = port;
     }
 
     /**
@@ -37,8 +37,8 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
     public AbstractZmqEndpoint(int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        mAbstractChannelListener = new ZmqChannelListener(this, type, threadPoolSize, messageHandlerFactory);
-        mPort = port;
+        this.abstractChannelListener = new ZmqChannelListener(this, type, threadPoolSize, messageHandlerFactory);
+        this.port = port;
     }
 
     /**
@@ -51,43 +51,43 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
 
     @Override
     public void openInboundChannel() {
-        if (!mAbstractChannelListener.isAlive())
-            mAbstractChannelListener.start();
+        if (!abstractChannelListener.isAlive())
+            abstractChannelListener.start();
     }
 
     @Override
     public void closeInboundChannel() {
-        if (mAbstractChannelListener.isAlive())
-            mAbstractChannelListener.terminate();
+        if (abstractChannelListener.isAlive())
+            abstractChannelListener.terminate();
     }
 
     @Override
     public void openOutboundChannel() {
-        if (mSocket == null) {
-            if (mContext == null)
-                mContext = ZMQ.context(1);
-            mSocket = getSocket(mContext);
+        if (socket == null) {
+            if (context == null)
+                context = ZMQ.context(1);
+            socket = getSocket(context);
         }
-        mSocket.bind(Endpoint.SCHEME + "*:" + mPort);
+        socket.bind(Endpoint.SCHEME + "*:" + port);
     }
 
     @Override
     public void closeOutboundChannel() {
-        if (mSocket != null) {
-            mSocket.close();
-            mSocket = null;
+        if (socket != null) {
+            socket.close();
+            socket = null;
         }
-        if (mContext != null) {
-            mContext.term();
-            mContext = null;
+        if (context != null) {
+            context.term();
+            context = null;
         }
     }
 
     @Override
     public boolean send(byte[] data) {
-        if (mSocket == null)
+        if (socket == null)
             throw new IllegalStateException("Outbound channel not open!");
-        return mSocket.send(data, ZMQ.NOBLOCK);
+        return socket.send(data, ZMQ.NOBLOCK);
     }
 
 }

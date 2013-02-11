@@ -28,7 +28,7 @@ public class ZmqHostEndpoint extends AbstractZmqEndpoint implements HostEndpoint
 
     @Override
     public void addClient(String address, int port) {
-        mAbstractChannelListener.addPeer(address, port);
+        abstractChannelListener.addPeer(address, port);
     }
 
 }

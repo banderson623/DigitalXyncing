@@ -14,11 +14,11 @@ import java.util.concurrent.Executors;
  */
 public abstract class AbstractChannelListener extends Thread implements ChannelListener {
 
-    protected final Endpoint mEndpoint;
-    protected final ExecutorService mThreadPool;
-    protected final MessageHandlerFactory mMessageHandlerFactory;
-    protected Map<String, Integer> mPeers;
-    protected volatile boolean mTerminate;
+    protected final Endpoint endpoint;
+    protected final ExecutorService threadPool;
+    protected final MessageHandlerFactory messageHandlerFactory;
+    protected Map<String, Integer> peers;
+    protected volatile boolean terminate;
 
     /**
      * Creates a new {@code AbstractChannelListener} instance.
@@ -29,10 +29,10 @@ public abstract class AbstractChannelListener extends Thread implements ChannelL
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
     public AbstractChannelListener(Endpoint endpoint, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        mEndpoint = endpoint;
-        mMessageHandlerFactory = messageHandlerFactory;
-        mThreadPool = Executors.newFixedThreadPool(threadPoolSize);
-        mPeers = new HashMap<String, Integer>();
+        this.endpoint = endpoint;
+        this.messageHandlerFactory = messageHandlerFactory;
+        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
+        this.peers = new HashMap<String, Integer>();
     }
 
     @Override
@@ -42,7 +42,7 @@ public abstract class AbstractChannelListener extends Thread implements ChannelL
 
     @Override
     public void terminate() {
-        mTerminate = true;
+        terminate = true;
     }
 
 }
