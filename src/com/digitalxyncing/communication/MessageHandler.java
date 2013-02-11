@@ -1,6 +1,7 @@
 package com.digitalxyncing.communication;
 
 import com.digitalxyncing.document.Message.MessageType;
+import com.digitalxyncing.document.impl.AbstractMessage;
 
 /**
  * A {@code MessageHandler} is used to react to a message that has been received by an {@link Endpoint}.
@@ -10,30 +11,31 @@ import com.digitalxyncing.document.Message.MessageType;
 public abstract class MessageHandler implements Runnable {
 
     private final byte[] message;
-    private final MessageType messageType;
 
     /**
      * Creates a new {@code MessageHandler} instance.
      *
-     * @param message     the message to handle
-     * @param messageType the {@link MessageType} of the message
+     * @param message the message to handle
      */
-    public MessageHandler(byte[] message, MessageType messageType) {
+    public MessageHandler(byte[] message) {
         this.message = message;
-        this.messageType = messageType;
     }
 
     /**
      * Processes the message asynchronously.
      *
      * @param message     the message to process
+     * @param pos         the starting index of the real payload, normally 1
      * @param messageType the {@link MessageType} of the message to handle
      */
-    protected abstract void handle(byte[] message, MessageType messageType);
+    protected abstract void handle(byte[] message, int pos, MessageType messageType);
 
     @Override
     public final void run() {
-        handle(message, messageType);
+        byte marker = message[0];
+        MessageType type = marker == AbstractMessage.FULL_DOCUMENT ?
+                MessageType.FULL_DOCUMENT : MessageType.DOCUMENT_FRAGMENT;
+        handle(message, 1, type);
     }
 
 }

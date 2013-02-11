@@ -1,7 +1,5 @@
 package com.digitalxyncing.communication;
 
-import com.digitalxyncing.document.Message.MessageType;
-
 import java.io.Serializable;
 
 /**
@@ -15,9 +13,7 @@ public interface MessageHandlerFactory<T extends Serializable> {
      *
      * @param endpoint    the {@link Endpoint} that received the message
      * @param messageData the message data to handle
-     * @param messageType the {@link MessageType} of the received message
-     * @return new {@code MessageHandler}
      */
-    MessageHandler build(Endpoint<T> endpoint, byte[] messageData, MessageType messageType);
+    MessageHandler build(Endpoint<T> endpoint, byte[] messageData);
 
 }

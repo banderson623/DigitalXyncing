@@ -71,7 +71,7 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
         while (!terminate) {
             // This is a blocking call which waits for incoming data
             // When data is received, it's sent to a handler which executes on a worker thread
-            threadPool.execute(messageHandlerFactory.build(endpoint, socket.recv(0), null)); // TODO: MessageType
+            threadPool.execute(messageHandlerFactory.build(endpoint, socket.recv(0)));
         }
         socket.close();
         context.term();
