@@ -1,13 +1,16 @@
 package com.digitalxyncing.communication.impl;
 
-import com.digitalxyncing.communication.*;
+import com.digitalxyncing.communication.HostEndpoint;
+import com.digitalxyncing.communication.MessageHandlerFactory;
 import org.zeromq.ZMQ;
+
+import java.io.Serializable;
 
 /**
  * Implementation of {@link HostEndpoint} which represents the notion of a "host" in a distributed client-host
  * cluster application. This implementation relies on ZeroMQ for communication.
  */
-public class ZmqHostEndpoint extends AbstractZmqEndpoint implements HostEndpoint {
+public class ZmqHostEndpoint<T extends Serializable> extends AbstractZmqEndpoint<T> implements HostEndpoint<T> {
 
     private static final int POOL_SIZE = 5;
 
@@ -17,7 +20,7 @@ public class ZmqHostEndpoint extends AbstractZmqEndpoint implements HostEndpoint
      * @param port                  the port to bind to
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      */
-    public ZmqHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory) {
+    public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
         super(port, ZMQ.PULL, POOL_SIZE, messageHandlerFactory);
     }
 

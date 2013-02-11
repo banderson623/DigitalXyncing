@@ -4,7 +4,7 @@ package com.digitalxyncing.communication;
  * A {@code ChannelListener} is responsible for listening for incoming messages and delegating them to a
  * {@link MessageHandler}.
  */
-public interface ChannelListener {
+public interface ChannelListener<T> {
 
     /**
      * Adds the given peer, identified by an address and port, to the {@code ChannelListener}.

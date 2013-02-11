@@ -2,14 +2,17 @@ package com.digitalxyncing.communication.impl;
 
 import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
+import com.digitalxyncing.document.Message;
 import org.zeromq.ZMQ;
+
+import java.io.Serializable;
 
 /**
  * Abstract implementation of {@link com.digitalxyncing.communication.Endpoint} containing common code for ZeroMQ implementations.
  */
-public abstract class AbstractZmqEndpoint implements Endpoint {
+public abstract class AbstractZmqEndpoint<T extends Serializable> implements Endpoint<T> {
 
-    protected AbstractChannelListener abstractChannelListener;
+    protected AbstractChannelListener<T> abstractChannelListener;
     protected ZMQ.Socket socket;
     protected int port;
     private ZMQ.Context context;
@@ -24,8 +27,8 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
      * @param threadPoolSize        the number of worker threads to allocate
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener(this, hostAddress, hostPort, type, threadPoolSize, messageHandlerFactory);
+    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener<T>(this, hostAddress, hostPort, type, threadPoolSize, messageHandlerFactory);
         this.port = port;
     }
 
@@ -36,8 +39,8 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
      * @param threadPoolSize        the number of worker threads to allocate
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener(this, type, threadPoolSize, messageHandlerFactory);
+    public AbstractZmqEndpoint(int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener<T>(this, type, threadPoolSize, messageHandlerFactory);
         this.port = port;
     }
 
@@ -84,10 +87,10 @@ public abstract class AbstractZmqEndpoint implements Endpoint {
     }
 
     @Override
-    public boolean send(byte[] data) {
+    public boolean send(Message<T> message) {
         if (socket == null)
             throw new IllegalStateException("Outbound channel not open!");
-        return socket.send(data, ZMQ.NOBLOCK);
+        return socket.send(message.getPrefixedByteArray(), ZMQ.NOBLOCK);
     }
 
 }

@@ -4,6 +4,7 @@ import com.digitalxyncing.communication.ChannelListener;
 import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -12,11 +13,11 @@ import java.util.concurrent.Executors;
 /**
  * Abstract implementation of {@link ChannelListener}.
  */
-public abstract class AbstractChannelListener extends Thread implements ChannelListener {
+public abstract class AbstractChannelListener<T extends Serializable> extends Thread implements ChannelListener<T> {
 
-    protected final Endpoint endpoint;
+    protected final Endpoint<T> endpoint;
     protected final ExecutorService threadPool;
-    protected final MessageHandlerFactory messageHandlerFactory;
+    protected final MessageHandlerFactory<T> messageHandlerFactory;
     protected Map<String, Integer> peers;
     protected volatile boolean terminate;
 
@@ -28,7 +29,7 @@ public abstract class AbstractChannelListener extends Thread implements ChannelL
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public AbstractChannelListener(Endpoint endpoint, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
+    public AbstractChannelListener(Endpoint<T> endpoint, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
         this.endpoint = endpoint;
         this.messageHandlerFactory = messageHandlerFactory;
         this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
@@ -36,12 +37,12 @@ public abstract class AbstractChannelListener extends Thread implements ChannelL
     }
 
     @Override
-    public void run() {
+    public final void run() {
         listen();
     }
 
     @Override
-    public void terminate() {
+    public final void terminate() {
         terminate = true;
     }
 

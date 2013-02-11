@@ -4,12 +4,13 @@ import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
 import org.zeromq.ZMQ;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Concrete implementation of {@link AbstractChannelListener} which relies on ZeroMQ for communication.
  */
-public class ZmqChannelListener extends AbstractChannelListener {
+public class ZmqChannelListener<T extends Serializable> extends AbstractChannelListener<T> {
 
     private int type;
     private ZMQ.Socket socket;
@@ -25,7 +26,7 @@ public class ZmqChannelListener extends AbstractChannelListener {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
+    public ZmqChannelListener(Endpoint<T> endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
         this(endpoint, type, threadPoolSize, messageHandlerFactory);
         this.peers.put(address, port);
     }
@@ -39,7 +40,7 @@ public class ZmqChannelListener extends AbstractChannelListener {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint endpoint, int type, int threadPoolSize, MessageHandlerFactory messageHandlerFactory) {
+    public ZmqChannelListener(Endpoint<T> endpoint, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
         super(endpoint, threadPoolSize, messageHandlerFactory);
         this.type = type;
     }
@@ -63,11 +64,14 @@ public class ZmqChannelListener extends AbstractChannelListener {
             System.out.println("Connecting to " + connect);
             socket.connect(connect);
         }
-        if (type == ZMQ.SUB)
+        if (type == ZMQ.SUB) {
+            // Subscribe to ALL messages
             socket.subscribe("".getBytes());
+        }
         while (!terminate) {
-            byte[] message = socket.recv(0);
-            threadPool.execute(messageHandlerFactory.build(endpoint, message));
+            // This is a blocking call which waits for incoming data
+            // When data is received, it's sent to a handler which executes on a worker thread
+            threadPool.execute(messageHandlerFactory.build(endpoint, socket.recv(0), null)); // TODO: MessageType
         }
         socket.close();
         context.term();
