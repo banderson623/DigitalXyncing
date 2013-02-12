@@ -2,10 +2,10 @@ package com.digitalxyncing.communication.impl;
 
 import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
+import com.digitalxyncing.communication.Peer;
 import org.zeromq.ZMQ;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Concrete implementation of {@link AbstractChannelListener} which relies on ZeroMQ for communication.
@@ -28,7 +28,8 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
      */
     public ZmqChannelListener(Endpoint<T> endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
         this(endpoint, type, threadPoolSize, messageHandlerFactory);
-        this.peers.put(address, port);
+        Peer peer = new Peer(address, port);
+        this.peers.add(peer);
     }
 
     /**
@@ -51,7 +52,8 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
             String connect = Endpoint.SCHEME + address + ':' + port;
             socket.connect(connect);
         }
-        peers.put(address, port);
+        Peer peer = new Peer(address, port);
+        this.peers.add(peer);
     }
 
     @Override
@@ -59,8 +61,8 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
         terminate = false;
         ZMQ.Context context = ZMQ.context(1);
         socket = context.socket(type);
-        for (Map.Entry<String, Integer> peer : peers.entrySet()) {
-            String connect = Endpoint.SCHEME + peer.getKey() + ':' + peer.getValue();
+        for (Peer peer : peers) {
+            String connect = Endpoint.SCHEME + peer.getAddress() + ':' + peer.getPort();
             System.out.println("Connecting to " + connect);
             socket.connect(connect);
         }
