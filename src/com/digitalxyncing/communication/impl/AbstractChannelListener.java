@@ -26,14 +26,27 @@ public abstract class AbstractChannelListener<T extends Serializable> extends Th
      * Creates a new {@code AbstractChannelListener} instance.
      *
      * @param endpoint              the {@link Endpoint} this {@code AbstractChannelListener} belongs to
-     * @param threadPoolSize        the number of worker threads to use to handle messages
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public AbstractChannelListener(Endpoint<T> endpoint, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
+    public AbstractChannelListener(Endpoint<T> endpoint, MessageHandlerFactory<T> messageHandlerFactory) {
+        this(endpoint, 1, messageHandlerFactory);
+    }
+
+    /**
+     * Creates a new {@code AbstractChannelListener} instance.
+     *
+     * @param endpoint              the {@link Endpoint} this {@code AbstractChannelListener} belongs to
+     * @param threadMultiplier      the multiplier used to allocate the thread pool size, which is equal to
+     *                              {@code number of CPUs * threadMultiplier}.
+     * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
+     *                              {@link com.digitalxyncing.communication.MessageHandler} instances
+     */
+    public AbstractChannelListener(Endpoint<T> endpoint, int threadMultiplier, MessageHandlerFactory<T> messageHandlerFactory) {
         this.endpoint = endpoint;
         this.messageHandlerFactory = messageHandlerFactory;
-        this.threadPool = Executors.newFixedThreadPool(threadPoolSize);
+        // Message handling operations are probably CPU-bound, so allocate 1 thread per core by default
+        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * threadMultiplier);
         this.peers = new HashSet<Peer>();
     }
 

@@ -24,11 +24,10 @@ public abstract class AbstractZmqEndpoint<T extends Serializable> implements End
      * @param hostPort              the host port to connect to
      * @param port                  the port to bind to for sending messages
      * @param type                  the ZMQ socket type
-     * @param threadPoolSize        the number of worker threads to allocate
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener<T>(this, hostAddress, hostPort, type, threadPoolSize, messageHandlerFactory);
+    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener<T>(this, hostAddress, hostPort, type, messageHandlerFactory);
         this.port = port;
     }
 
@@ -36,11 +35,10 @@ public abstract class AbstractZmqEndpoint<T extends Serializable> implements End
      * Creates a new {@code AbstractZmqEndpoint} instance.
      *
      * @param type                  the ZMQ socket type
-     * @param threadPoolSize        the number of worker threads to allocate
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener<T>(this, type, threadPoolSize, messageHandlerFactory);
+    public AbstractZmqEndpoint(int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener<T>(this, type, messageHandlerFactory);
         this.port = port;
     }
 

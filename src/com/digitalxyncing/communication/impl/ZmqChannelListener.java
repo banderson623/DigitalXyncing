@@ -23,12 +23,11 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
      * @param address               the address to connect to
      * @param port                  the port to connect to
      * @param type                  the ZMQ socket type
-     * @param threadPoolSize        the number of worker threads to use to handle messages
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint<T> endpoint, String address, int port, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
-        this(endpoint, type, threadPoolSize, messageHandlerFactory);
+    public ZmqChannelListener(Endpoint<T> endpoint, String address, int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+        this(endpoint, type, messageHandlerFactory);
         Peer peer = new Peer(address, port);
         this.peers.add(peer);
     }
@@ -38,12 +37,11 @@ public class ZmqChannelListener<T extends Serializable> extends AbstractChannelL
      *
      * @param endpoint              the {@link Endpoint} this {@code AbstractChannelListener} belongs to
      * @param type                  the ZMQ socket type
-     * @param threadPoolSize        the number of worker threads to use to handle messages
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint<T> endpoint, int type, int threadPoolSize, MessageHandlerFactory<T> messageHandlerFactory) {
-        super(endpoint, threadPoolSize, messageHandlerFactory);
+    public ZmqChannelListener(Endpoint<T> endpoint, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+        super(endpoint, messageHandlerFactory);
         this.type = type;
     }
 

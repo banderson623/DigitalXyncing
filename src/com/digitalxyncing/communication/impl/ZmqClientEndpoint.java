@@ -12,8 +12,6 @@ import java.io.Serializable;
  */
 public class ZmqClientEndpoint<T extends Serializable> extends AbstractZmqEndpoint<T> {
 
-    private static final int POOL_SIZE = 5;
-
     /**
      * Creates a new {@code ZmqClientEndpoint} instance.
      *
@@ -23,7 +21,7 @@ public class ZmqClientEndpoint<T extends Serializable> extends AbstractZmqEndpoi
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      */
     public ZmqClientEndpoint(String hostAddress, int hostPort, int port, MessageHandlerFactory<T> messageHandlerFactory) {
-        super(hostAddress, hostPort, port, ZMQ.SUB, POOL_SIZE, messageHandlerFactory);
+        super(hostAddress, hostPort, port, ZMQ.SUB, messageHandlerFactory);
     }
 
     @Override
