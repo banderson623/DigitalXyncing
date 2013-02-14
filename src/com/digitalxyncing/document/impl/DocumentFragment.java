@@ -1,11 +1,9 @@
 package com.digitalxyncing.document.impl;
 
-import java.io.Serializable;
-
 /**
  * Implementation of {@link AbstractMessage} representing a partial fragment of a {@link Document}.
  */
-public abstract class DocumentFragment<T extends Serializable> extends AbstractMessage {
+public abstract class DocumentFragment<T> extends AbstractMessage {
 
     public DocumentFragment(byte[] fragmentData) {
         super(DOCUMENT_FRAGMENT);

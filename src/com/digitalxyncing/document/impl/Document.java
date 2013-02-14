@@ -1,11 +1,9 @@
 package com.digitalxyncing.document.impl;
 
-import java.io.Serializable;
-
 /**
  * Implementation of {@link AbstractMessage} representing a complete {@link Document}.
  */
-public abstract class Document<T extends Serializable> extends AbstractMessage {
+public abstract class Document<T> extends AbstractMessage {
 
     public Document(byte[] documentData) {
         super(FULL_DOCUMENT);

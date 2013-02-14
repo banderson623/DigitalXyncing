@@ -2,13 +2,11 @@ package com.digitalxyncing.communication;
 
 import com.digitalxyncing.document.Message;
 
-import java.io.Serializable;
-
 /**
  * An {@code Endpoint} is a single node in the application cluster. It has the ability to both transmit
  * and receive messages.
  */
-public interface Endpoint<T extends Serializable> {
+public interface Endpoint<T> {
 
     public static final String SCHEME = "tcp://";
 

@@ -5,13 +5,12 @@ import com.digitalxyncing.communication.MessageHandlerFactory;
 import com.digitalxyncing.communication.Peer;
 import org.zeromq.ZMQ;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Concrete implementation of {@link AbstractChannelListener} which relies on ZeroMQ for communication.
  */
-public class ZmqChannelListener<T extends Serializable> extends AbstractChannelListener<T> {
+public class ZmqChannelListener<T> extends AbstractChannelListener<T> {
 
     private int type;
     private ZMQ.Socket socket;

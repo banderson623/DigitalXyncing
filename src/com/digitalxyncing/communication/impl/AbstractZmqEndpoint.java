@@ -5,12 +5,10 @@ import com.digitalxyncing.communication.MessageHandlerFactory;
 import com.digitalxyncing.document.Message;
 import org.zeromq.ZMQ;
 
-import java.io.Serializable;
-
 /**
  * Abstract implementation of {@link com.digitalxyncing.communication.Endpoint} containing common code for ZeroMQ implementations.
  */
-public abstract class AbstractZmqEndpoint<T extends Serializable> implements Endpoint<T> {
+public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
 
     protected AbstractChannelListener<T> abstractChannelListener;
     protected ZMQ.Socket socket;

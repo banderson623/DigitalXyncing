@@ -5,7 +5,6 @@ import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
 import com.digitalxyncing.communication.Peer;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +13,7 @@ import java.util.concurrent.Executors;
 /**
  * Abstract implementation of {@link ChannelListener}.
  */
-public abstract class AbstractChannelListener<T extends Serializable> extends Thread implements ChannelListener<T> {
+public abstract class AbstractChannelListener<T> extends Thread implements ChannelListener<T> {
 
     protected final Endpoint<T> endpoint;
     protected final ExecutorService threadPool;
