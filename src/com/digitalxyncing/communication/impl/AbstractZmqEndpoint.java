@@ -89,4 +89,9 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
         return socket.send(message.getPrefixedByteArray(), ZMQ.NOBLOCK);
     }
 
+    @Override
+    public int getPort() {
+        return port;
+    }
+
 }

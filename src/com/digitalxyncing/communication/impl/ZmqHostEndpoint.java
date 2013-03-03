@@ -54,6 +54,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
     @Override
     public void addClient(String address, int port) {
         abstractChannelListener.addPeer(address, port);
+        System.out.println("Peer added at " + address + ":" + port);
     }
 
     @Override
@@ -129,8 +130,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
                     if (authenticator == null) {
                         // Just add the peer if there's no Authenticator
                         ZmqHostEndpoint.this.addClient(address, port);
-                        outputStream.writeUTF("1 " + connectionSocket.getLocalSocketAddress().toString() + ":" +
-                                ZmqHostEndpoint.this.port);
+                        outputStream.writeUTF("1 " + ZmqHostEndpoint.this.port);
                         outputStream.flush();
                     } else {
                         // Otherwise authenticate the connection request
