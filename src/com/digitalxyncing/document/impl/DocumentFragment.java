@@ -5,9 +5,8 @@ package com.digitalxyncing.document.impl;
  */
 public abstract class DocumentFragment<T> extends AbstractMessage {
 
-    public DocumentFragment(byte[] fragmentData) {
+    public DocumentFragment() {
         super(DOCUMENT_FRAGMENT);
-        data = fragmentData;
     }
 
     @Override

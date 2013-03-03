@@ -26,4 +26,9 @@ public abstract class AbstractMessage<T> implements Message<T> {
         return buffer;
     }
 
+    @Override
+    public byte[] getData() {
+        return data;
+    }
+
 }

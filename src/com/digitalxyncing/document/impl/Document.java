@@ -10,17 +10,9 @@ public abstract class Document<T> extends AbstractMessage {
         data = documentData;
     }
 
-    public Document(T document) {
+    public Document() {
         super(FULL_DOCUMENT);
-        data = serialize(document);
     }
-
-    /**
-     * Serializes the object into a byte array.
-     *
-     * @return byte array
-     */
-    protected abstract byte[] serialize(T object);
 
     /**
      * Updates the {@code Document} with the given {@link DocumentFragment}.
