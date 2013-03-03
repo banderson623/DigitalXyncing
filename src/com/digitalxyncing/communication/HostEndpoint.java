@@ -15,4 +15,11 @@ public interface HostEndpoint<T> extends Endpoint<T> {
      */
     void addClient(String address, int port);
 
+    /**
+     * Returns the port that's listening for connection requests.
+     *
+     * @return connection request port
+     */
+    int getConnectionRequestPort();
+
 }
