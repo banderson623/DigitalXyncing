@@ -1,6 +1,7 @@
 package com.digitalxyncing.communication.impl;
 
 import com.digitalxyncing.communication.Authenticator;
+import com.digitalxyncing.communication.ClientAddedListener;
 import com.digitalxyncing.communication.HostEndpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
 import com.digitalxyncing.util.ThreadUtils;
@@ -11,6 +12,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,6 +25,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
 
     private ConnectionManager connectionManager;
     private Authenticator authenticator;
+    private List<ClientAddedListener> clientAddedListeners;
 
     /**
      * Creates a new {@code ZmqHostEndpoint} instance.
@@ -32,6 +36,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
     public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
         super(port, ZMQ.PULL, messageHandlerFactory);
         connectionManager = new ConnectionManager();
+        clientAddedListeners = new ArrayList<ClientAddedListener>();
     }
 
     /**
@@ -54,11 +59,19 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
     @Override
     public void addClient(String address, int port) {
         abstractChannelListener.addPeer(address, port);
+        for (ClientAddedListener listener : clientAddedListeners) {
+            listener.onClientAdded(address, port);
+        }
     }
 
     @Override
     public int getConnectionRequestPort() {
         return connectionManager.getPort();
+    }
+
+    @Override
+    public void addClientAddedListener(ClientAddedListener listener) {
+        clientAddedListeners.add(listener);
     }
 
     @Override

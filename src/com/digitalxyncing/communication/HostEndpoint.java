@@ -22,4 +22,11 @@ public interface HostEndpoint<T> extends Endpoint<T> {
      */
     int getConnectionRequestPort();
 
+    /**
+     * Adds the {@link ClientAddedListener} to the {@code HostEndpoint}.
+     *
+     * @param listener the {@code ClientAddedListener} to add
+     */
+    void addClientAddedListener(ClientAddedListener listener);
+
 }
