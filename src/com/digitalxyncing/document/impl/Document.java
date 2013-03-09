@@ -3,7 +3,7 @@ package com.digitalxyncing.document.impl;
 /**
  * Implementation of {@link AbstractMessage} representing a complete {@link Document}.
  */
-public abstract class Document<T> extends AbstractMessage {
+public abstract class Document<T> extends AbstractMessage<T> {
 
     public Document(byte[] documentData) {
         super(FULL_DOCUMENT);

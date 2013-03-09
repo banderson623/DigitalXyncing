@@ -47,8 +47,8 @@ public class ZmqEndpointFactory implements EndpointFactory {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return new ZmqClientEndpoint<T>(hostAddress, hostSharePort, port, messageHandlerFactory);
         }
+        return new ZmqClientEndpoint<T>(hostAddress, hostSharePort, port, messageHandlerFactory);
     }
 
     @Override
@@ -57,7 +57,8 @@ public class ZmqEndpointFactory implements EndpointFactory {
     }
 
     @Override
-    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory, Authenticator
+    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory,
+                                                 Authenticator
             authenticator) {
         return new ZmqHostEndpoint<T>(port, messageHandlerFactory, authenticator);
     }

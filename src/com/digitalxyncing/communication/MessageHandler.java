@@ -32,6 +32,8 @@ public abstract class MessageHandler implements Runnable {
 
     @Override
     public final void run() {
+        if (message.length == 0)
+            return;
         byte marker = message[0];
         MessageType type = marker == AbstractMessage.FULL_DOCUMENT ?
                 MessageType.FULL_DOCUMENT : MessageType.DOCUMENT_FRAGMENT;

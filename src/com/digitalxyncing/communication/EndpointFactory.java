@@ -7,6 +7,6 @@ public interface EndpointFactory {
 
     <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory);
 
-    <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory,
+    <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory,
                                           Authenticator authenticator);
 }
