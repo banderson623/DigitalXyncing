@@ -2,6 +2,8 @@ package com.digitalxyncing.communication.impl;
 
 import com.digitalxyncing.communication.Endpoint;
 import com.digitalxyncing.communication.MessageHandlerFactory;
+import com.digitalxyncing.document.Message.MessageType;
+import com.digitalxyncing.document.impl.MessageImpl;
 import org.zeromq.ZMQ;
 
 /**
@@ -30,5 +32,10 @@ public class ZmqClientEndpoint<T> extends AbstractZmqEndpoint<T> {
     @Override
     public boolean isHost() {
         return false;
+    }
+
+    @Override
+    public boolean requestFullDocument() {
+        return send(new MessageImpl(MessageType.FULL_DOCUMENT_REQUEST));
     }
 }

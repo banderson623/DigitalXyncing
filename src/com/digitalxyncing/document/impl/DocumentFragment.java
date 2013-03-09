@@ -3,10 +3,10 @@ package com.digitalxyncing.document.impl;
 /**
  * Implementation of {@link AbstractMessage} representing a partial fragment of a {@link Document}.
  */
-public abstract class DocumentFragment<T> extends AbstractMessage<T> {
+public abstract class DocumentFragment<T> extends AbstractMessage {
 
     public DocumentFragment() {
-        super(DOCUMENT_FRAGMENT);
+        super(MessageType.DOCUMENT_FRAGMENT);
     }
 
     @Override

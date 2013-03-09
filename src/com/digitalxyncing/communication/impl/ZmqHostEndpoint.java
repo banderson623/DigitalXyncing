@@ -93,6 +93,11 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
         return true;
     }
 
+    @Override
+    public boolean requestFullDocument() {
+        throw new UnsupportedOperationException();
+    }
+
     private class ConnectionManager extends Thread {
 
         private ServerSocket connectionSocket;

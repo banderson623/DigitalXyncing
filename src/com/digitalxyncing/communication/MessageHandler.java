@@ -1,7 +1,7 @@
 package com.digitalxyncing.communication;
 
+import com.digitalxyncing.document.Message;
 import com.digitalxyncing.document.Message.MessageType;
-import com.digitalxyncing.document.impl.AbstractMessage;
 
 /**
  * A {@code MessageHandler} is used to react to a message that has been received by an {@link Endpoint}.
@@ -35,8 +35,20 @@ public abstract class MessageHandler implements Runnable {
         if (message.length == 0)
             return;
         byte marker = message[0];
-        MessageType type = marker == AbstractMessage.FULL_DOCUMENT ?
-                MessageType.FULL_DOCUMENT : MessageType.DOCUMENT_FRAGMENT;
+        MessageType type;
+        switch (marker) {
+            case Message.FULL_DOCUMENT_PREFIX:
+                type = MessageType.FULL_DOCUMENT;
+                break;
+            case Message.DOCUMENT_FRAGMENT_PREFIX:
+                type = MessageType.DOCUMENT_FRAGMENT;
+                break;
+            case Message.FULL_DOCUMENT_REQUEST_PREFIX:
+                type = MessageType.FULL_DOCUMENT_REQUEST;
+                break;
+            default:
+                throw new RuntimeException("Invalid message type prefix " + marker);
+        }
         handle(message, 1, type);
     }
 

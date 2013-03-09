@@ -83,7 +83,7 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
     }
 
     @Override
-    public boolean send(Message<T> message) {
+    public boolean send(Message message) {
         if (socket == null)
             throw new IllegalStateException("Outbound channel not open!");
         return socket.send(message.getPrefixedByteArray(), ZMQ.NOBLOCK);

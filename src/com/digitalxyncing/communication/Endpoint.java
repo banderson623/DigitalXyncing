@@ -38,8 +38,9 @@ public interface Endpoint<T> {
      * Transmits the given {@link Message}.
      *
      * @param message the {@code Message} to send
+     * @return {@code true} if the send was successful, {@code false} otherwise
      */
-    boolean send(Message<T> message);
+    boolean send(Message message);
 
     /**
      * Returns the port this {@code Endpoint} is bound to.
@@ -54,5 +55,12 @@ public interface Endpoint<T> {
      * @return {@code true} if it is a host, {@code false} otherwise
      */
     boolean isHost();
+
+    /**
+     * Sends a request for the full document state.
+     *
+     * @return {@code true} if the request was successful, {@code false} otherwise
+     */
+    boolean requestFullDocument();
 
 }
