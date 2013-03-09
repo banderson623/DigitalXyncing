@@ -66,8 +66,8 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
             if (context == null)
                 context = ZMQ.context(1);
             socket = getSocket(context);
+            socket.bind(Endpoint.SCHEME + "*:" + port);
         }
-        socket.bind(Endpoint.SCHEME + "*:" + port);
     }
 
     @Override

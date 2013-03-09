@@ -26,4 +26,9 @@ public class ZmqClientEndpoint<T> extends AbstractZmqEndpoint<T> {
     protected ZMQ.Socket getSocket(ZMQ.Context context) {
         return context.socket(ZMQ.PUSH);
     }
+
+    @Override
+    public boolean isHost() {
+        return false;
+    }
 }

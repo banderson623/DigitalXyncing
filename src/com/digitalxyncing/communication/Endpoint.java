@@ -48,4 +48,11 @@ public interface Endpoint<T> {
      */
     int getPort();
 
+    /**
+     * Indicates if this {@code Endpoint} is a {@link HostEndpoint}.
+     *
+     * @return {@code true} if it is a host, {@code false} otherwise
+     */
+    boolean isHost();
+
 }

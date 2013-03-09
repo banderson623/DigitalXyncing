@@ -88,6 +88,11 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
         super.closeInboundChannel();
     }
 
+    @Override
+    public boolean isHost() {
+        return true;
+    }
+
     private class ConnectionManager extends Thread {
 
         private ServerSocket connectionSocket;
