@@ -8,16 +8,18 @@ import com.digitalxyncing.document.Message.MessageType;
  * It implements {@link Runnable} so that it can be executed within the context of a worker thread
  * asynchronously.
  */
-public abstract class MessageHandler implements Runnable {
+public abstract class MessageHandler<T> implements Runnable {
 
     private final byte[] message;
+    protected Endpoint<T> endpoint;
 
     /**
      * Creates a new {@code MessageHandler} instance.
      *
      * @param message the message to handle
      */
-    public MessageHandler(byte[] message) {
+    public MessageHandler(Endpoint<T> endpoint, byte[] message) {
+        this.endpoint = endpoint;
         this.message = message;
     }
 
@@ -26,15 +28,23 @@ public abstract class MessageHandler implements Runnable {
      *
      * @param message     the message to process
      * @param pos         the starting index of the real payload, normally 1
+     * @param origin      the origin of the message
      * @param messageType the {@link MessageType} of the message to handle
      */
-    protected abstract void handle(byte[] message, int pos, MessageType messageType);
+    protected abstract void handle(byte[] message, int pos, String origin, MessageType messageType);
 
     @Override
     public final void run() {
         if (message.length == 0)
             return;
-        byte marker = message[0];
+        byte[] originBytes = new byte[36];
+        System.arraycopy(message, 0, originBytes, 0, 36);
+        String origin = new String(originBytes);
+        if (origin.equals(endpoint.getId())) {
+            // Message is an echo, ignore it
+            return;
+        }
+        byte marker = message[36];
         MessageType type;
         switch (marker) {
             case Message.FULL_DOCUMENT_PREFIX:
@@ -47,9 +57,9 @@ public abstract class MessageHandler implements Runnable {
                 type = MessageType.FULL_DOCUMENT_REQUEST;
                 break;
             default:
-                throw new RuntimeException("Invalid message type prefix " + marker);
+                throw new RuntimeException("Invalid message type typeMarker " + marker);
         }
-        handle(message, 1, type);
+        handle(message, originBytes.length + 1, origin, type);
     }
 
 }

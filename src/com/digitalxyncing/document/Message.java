@@ -40,4 +40,18 @@ public interface Message {
 
     byte[] getData();
 
+    /**
+     * Returns the origin endpoint ID for this {@code Message}.
+     *
+     * @return {@code Endpoint} ID
+     */
+    String getOrigin();
+
+    /**
+     * Sets the origin endpoint ID for this {@code Message}.
+     *
+     * @param origin {@code Endpoint} ID
+     */
+    void setOrigin(String origin);
+
 }

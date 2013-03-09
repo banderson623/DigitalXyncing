@@ -5,6 +5,8 @@ import com.digitalxyncing.communication.MessageHandlerFactory;
 import com.digitalxyncing.document.Message;
 import org.zeromq.ZMQ;
 
+import java.util.UUID;
+
 /**
  * Abstract implementation of {@link com.digitalxyncing.communication.Endpoint} containing common code for ZeroMQ implementations.
  */
@@ -13,6 +15,7 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
     protected AbstractChannelListener<T> abstractChannelListener;
     protected ZMQ.Socket socket;
     protected int port;
+    protected String id;
     private ZMQ.Context context;
 
     /**
@@ -27,6 +30,7 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
     public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
         this.abstractChannelListener = new ZmqChannelListener<T>(this, hostAddress, hostPort, type, messageHandlerFactory);
         this.port = port;
+        this.id = UUID.randomUUID().toString();
     }
 
     /**
@@ -38,6 +42,7 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
     public AbstractZmqEndpoint(int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
         this.abstractChannelListener = new ZmqChannelListener<T>(this, type, messageHandlerFactory);
         this.port = port;
+        this.id = UUID.randomUUID().toString();
     }
 
     /**
@@ -86,12 +91,19 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
     public boolean send(Message message) {
         if (socket == null)
             throw new IllegalStateException("Outbound channel not open!");
+        if (message.getOrigin() == null)
+            message.setOrigin(id);
         return socket.send(message.getPrefixedByteArray(), ZMQ.NOBLOCK);
     }
 
     @Override
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
 }

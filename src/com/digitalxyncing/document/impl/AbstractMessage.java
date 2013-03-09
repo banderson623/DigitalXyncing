@@ -2,32 +2,52 @@ package com.digitalxyncing.document.impl;
 
 import com.digitalxyncing.document.Message;
 
+import java.nio.ByteBuffer;
+
 /**
  * Abstract implementation of {@link com.digitalxyncing.document.Message}.
  */
 public abstract class AbstractMessage implements Message {
 
     protected byte[] data;
-    protected byte prefix;
+    protected byte typeMarker;
+    protected String origin;
 
     public AbstractMessage(MessageType messageType) {
-        prefix = messageType.getPrefix();
+        typeMarker = messageType.getPrefix();
     }
 
     @Override
     public final byte[] getPrefixedByteArray() {
-        if (data == null)
-            return new byte[] { prefix };
-        int dataLen = data.length;
-        byte[] buffer = new byte[dataLen + 1];
-        buffer[0] = prefix;
-        System.arraycopy(data, 0, buffer, 1, dataLen);
-        return buffer;
+        byte[] originBytes = origin.getBytes();
+        if (data == null) {
+            byte[] buffer = new byte[originBytes.length + 1];
+            ByteBuffer target = ByteBuffer.wrap(buffer);
+            target.put(originBytes);
+            target.put(typeMarker);
+            return target.array();
+        }
+        byte[] buffer = new byte[originBytes.length + data.length + 1];
+        ByteBuffer target = ByteBuffer.wrap(buffer);
+        target.put(originBytes);
+        target.put(typeMarker);
+        target.put(data);
+        return target.array();
     }
 
     @Override
     public byte[] getData() {
         return data;
+    }
+
+    @Override
+    public String getOrigin() {
+        return origin;
+    }
+
+    @Override
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
 }

@@ -63,4 +63,11 @@ public interface Endpoint<T> {
      */
     boolean requestFullDocument();
 
+    /**
+     * Returns the GUID for this {@code Endpoint}.
+     *
+     * @return {@code Endpoint} GUID
+     */
+    String getId();
+
 }
