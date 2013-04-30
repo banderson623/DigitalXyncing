@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ZmqEndpointFactory implements EndpointFactory {
 
     @Override
-    public <T> Endpoint<T> buildClientEndpoint(String hostAddress, int hostPort, String token, Class<T> type,
+    public <T> Endpoint<T> buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token, Class<T> type,
                                                MessageHandlerFactory<T> messageHandlerFactory) {
         int hostSharePort = 0;
         int port = 0;
@@ -20,7 +20,7 @@ public class ZmqEndpointFactory implements EndpointFactory {
         DataOutputStream outputStream = null;
         try {
             System.out.println("Requesting a connection to " + hostAddress);
-            socket = new Socket(InetAddress.getByName(hostAddress), hostPort);
+            socket = new Socket(InetAddress.getByName(hostAddress), hostDiscoveryPort);
             port = socket.getLocalPort();
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
