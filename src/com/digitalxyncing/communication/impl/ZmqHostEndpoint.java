@@ -65,6 +65,23 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
         this.discoveryPort = discoveryPort;
     }
 
+    /**
+     * Creates a new {@code ZmqHostEndpoint} instance.
+     *
+     * @param port                  the port to bind to
+     * @param discoveryPort         the port to bind to for listening for connection requests
+     * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
+     * @param authenticator         the {@link Authenticator} to use to authenticate connection requests
+     */
+    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory<T> messageHandlerFactory,
+                           Authenticator authenticator) {
+        super(port, ZMQ.PULL, messageHandlerFactory);
+        connectionManager = new ConnectionManager();
+        clientAddedListeners = new ArrayList<ClientAddedListener>();
+        this.discoveryPort = discoveryPort;
+        this.authenticator = authenticator;
+    }
+
     @Override
     protected ZMQ.Socket getSocket(ZMQ.Context context) {
         return context.socket(ZMQ.PUB);
