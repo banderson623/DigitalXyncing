@@ -18,14 +18,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Implementation of {@link HostEndpoint} which represents the notion of a "host" in a distributed client-host
- * cluster application. This implementation relies on ZeroMQ for communication.
+ * Implementation of {@link HostEndpoint} which represents the notion of a "host" in a distributed client-host cluster
+ * application. This implementation relies on ZeroMQ for communication.
  */
 public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEndpoint<T> {
 
     private ConnectionManager connectionManager;
     private Authenticator authenticator;
     private List<ClientAddedListener> clientAddedListeners;
+    private final int discoveryPort;
 
     /**
      * Creates a new {@code ZmqHostEndpoint} instance.
@@ -37,6 +38,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
         super(port, ZMQ.PULL, messageHandlerFactory);
         connectionManager = new ConnectionManager();
         clientAddedListeners = new ArrayList<ClientAddedListener>();
+        discoveryPort = 0;
     }
 
     /**
@@ -49,6 +51,18 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
     public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory, Authenticator authenticator) {
         this(port, messageHandlerFactory);
         this.authenticator = authenticator;
+    }
+
+    /**
+     * Creates a new {@code ZmqHostEndpoint} instance.
+     *
+     * @param port                  the port to bind to
+     * @param discoveryPort         the port to bind to for listening for connection requests
+     * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
+     */
+    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory<T> messageHandlerFactory) {
+        super(port, ZMQ.PULL, messageHandlerFactory);
+        this.discoveryPort = discoveryPort;
     }
 
     @Override
@@ -106,7 +120,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
 
         public ConnectionManager() {
             try {
-                connectionSocket = new ServerSocket(0);
+                connectionSocket = new ServerSocket(discoveryPort);
             } catch (IOException e) {
                 // TODO
                 e.printStackTrace();
@@ -171,7 +185,8 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
                             outputStream.writeUTF("1 " + ZmqHostEndpoint.this.port);
                             outputStream.flush();
                         } else {
-                            System.out.println("Connection request from " + address + ":" + port + " is not authenticated");
+                            System.out.println("Connection request from " + address + ":" + port + " is not " +
+                                    "authenticated");
                             outputStream.writeUTF("0 Authentication Failed");
                             outputStream.flush();
                         }
