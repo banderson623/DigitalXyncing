@@ -146,16 +146,22 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
             @Override
             public void run() {
                 try {
+                    // Get the address of the incoming connection
                     String address = connection.getInetAddress().getHostAddress();
-                    if (address.equals("127.0.0.1"))
-                        address = "10.0.2.2";
+                    // and the incoming port
                     int port = connection.getPort();
+                    // Here is a stream that will be sent to the connect client
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    // NOTE: Right now, there is no authenticator...
+                    //    so all of the clients are accepted.
                     if (authenticator == null) {
-                        // Just add the peer if there's no Authenticator
+                        // Just add the peer (client) if there's no Authenticator
                         ZmqHostEndpoint.this.addClient(address, port);
+                        // Indicator, to the client, that we connected well.
                         outputStream.writeUTF("1 " + ZmqHostEndpoint.this.port);
+                        // make sure it really goes (down) get the plunger!
                         outputStream.flush();
+
                     } else {
                         // Otherwise authenticate the connection request
                         DataInputStream inputStream = new DataInputStream(connection.getInputStream());
@@ -171,6 +177,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
                         }
                         inputStream.close();
                     }
+                    // close the stream, done writing for now.
                     outputStream.close();
                 } catch (IOException e) {
                     // TODO
