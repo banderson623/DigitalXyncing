@@ -36,9 +36,9 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
      */
     public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
         super(port, ZMQ.PULL, messageHandlerFactory);
+        discoveryPort = 0;
         connectionManager = new ConnectionManager();
         clientAddedListeners = new ArrayList<ClientAddedListener>();
-        discoveryPort = 0;
     }
 
     /**
@@ -76,9 +76,9 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
     public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory<T> messageHandlerFactory,
                            Authenticator authenticator) {
         super(port, ZMQ.PULL, messageHandlerFactory);
+        this.discoveryPort = discoveryPort;
         connectionManager = new ConnectionManager();
         clientAddedListeners = new ArrayList<ClientAddedListener>();
-        this.discoveryPort = discoveryPort;
         this.authenticator = authenticator;
     }
 
