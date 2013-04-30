@@ -64,6 +64,21 @@ public class ZmqSniffy implements Sniffy {
         return foundHosts;
     }
 
+    @Override
+    public void discoverXyncersOnPort(final int portNumber,
+                                      final HostListCallBack callBack)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                List<String> foundHosts = discoverXyncersOnPort(portNumber);
+                callBack.results(foundHosts);
+            }
+        }).start();
+
+    }
+
     private final class FoundHost {
         private String ip;
         private boolean wasFound;

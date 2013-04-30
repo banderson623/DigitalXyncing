@@ -18,4 +18,9 @@ public interface Sniffy {
      */
     List<String> discoverXyncersOnPort(int portNumber);
 
+    void discoverXyncersOnPort(int portNumber, HostListCallBack callBack);
+
+    public interface HostListCallBack {
+        public void results(List<String> listOfDiscoveredIPs);
+    }
 }
