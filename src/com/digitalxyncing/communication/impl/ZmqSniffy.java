@@ -31,6 +31,8 @@ public class ZmqSniffy implements Sniffy {
             // This will be the first three octets of the IP "192.168.0"
             String firstPartOfIpAddress = myIpAddress.substring(0, lastOctetIndex);
 
+            System.out.println("Scanning " + firstPartOfIpAddress+".* for port: " +portNumber);
+
             final ExecutorService exec = Executors.newFixedThreadPool(20);
             final int timeout = 200;
 
