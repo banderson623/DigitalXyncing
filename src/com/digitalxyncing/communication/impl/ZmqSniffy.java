@@ -17,9 +17,11 @@ import java.util.concurrent.*;
  * Add some readme here about how this operates
  */
 public class ZmqSniffy implements Sniffy {
+
     @Override
     public List<String> discoverXyncersOnPort(final int portNumber)
     {
+        System.out.println("Starting session discovery");
         List<String> foundHosts = new ArrayList<String>(255);
         try
         {
@@ -61,6 +63,7 @@ public class ZmqSniffy implements Sniffy {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
+        System.out.println("Finished session discovery");
         return foundHosts;
     }
 
