@@ -38,6 +38,11 @@ public interface Message {
      */
     byte[] getPrefixedByteArray();
 
+    /**
+     * Returns the raw data of the {@code Message}.
+     *
+     * @return raw {@code Message} data
+     */
     byte[] getData();
 
     /**

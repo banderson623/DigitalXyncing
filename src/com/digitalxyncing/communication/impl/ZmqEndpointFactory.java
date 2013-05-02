@@ -22,15 +22,22 @@ public class ZmqEndpointFactory implements EndpointFactory {
             System.out.println("Requesting a connection to " + hostAddress);
             socket = new Socket(InetAddress.getByName(hostAddress), hostDiscoveryPort);
             port = socket.getLocalPort();
+
+            // Send the authentication token
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
             outputStream.writeUTF(token);
             outputStream.flush();
+
+            // Check the response
             String response = inputStream.readUTF();
             if (response.startsWith("0")) {
+                // 0 indicates authentication failed
                 System.out.println("Request failed authentication");
                 return null;
             }
+
+            // Otherwise, authentication succeeded, so we can get the host's share port and connect
             hostSharePort = Integer.valueOf(response.substring(response.indexOf(" ") + 1));
         } catch (IOException e) {
             // TODO
