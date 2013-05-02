@@ -11,8 +11,8 @@ import java.net.Socket;
 public class ZmqEndpointFactory implements EndpointFactory {
 
     @Override
-    public <T> Endpoint<T> buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token, Class<T> type,
-                                               MessageHandlerFactory<T> messageHandlerFactory) {
+    public Endpoint buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token,
+                                               MessageHandlerFactory messageHandlerFactory) {
         int hostSharePort = 0;
         int port = 0;
         Socket socket = null;
@@ -22,15 +22,22 @@ public class ZmqEndpointFactory implements EndpointFactory {
             System.out.println("Requesting a connection to " + hostAddress);
             socket = new Socket(InetAddress.getByName(hostAddress), hostDiscoveryPort);
             port = socket.getLocalPort();
+
+            // Send the authentication token
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
             outputStream.writeUTF(token);
             outputStream.flush();
+
+            // Check the response
             String response = inputStream.readUTF();
             if (response.startsWith("0")) {
+                // 0 indicates authentication failed
                 System.out.println("Request failed authentication");
                 return null;
             }
+
+            // Otherwise, authentication succeeded, so we can get the host's share port and connect
             hostSharePort = Integer.valueOf(response.substring(response.indexOf(" ") + 1));
         } catch (IOException e) {
             // TODO
@@ -48,18 +55,18 @@ public class ZmqEndpointFactory implements EndpointFactory {
                 e.printStackTrace();
             }
         }
-        return new ZmqClientEndpoint<T>(hostAddress, hostSharePort, port, messageHandlerFactory);
+        return new ZmqClientEndpoint(hostAddress, hostSharePort, port, messageHandlerFactory);
     }
 
     @Override
-    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
-        return new ZmqHostEndpoint<T>(port, messageHandlerFactory);
+    public HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory) {
+        return new ZmqHostEndpoint(port, messageHandlerFactory);
     }
 
     @Override
-    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory,
+    public HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory,
                                                  Authenticator
             authenticator) {
-        return new ZmqHostEndpoint<T>(port, messageHandlerFactory, authenticator);
+        return new ZmqHostEndpoint(port, messageHandlerFactory, authenticator);
     }
 }

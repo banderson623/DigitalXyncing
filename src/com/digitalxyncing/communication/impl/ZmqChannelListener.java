@@ -9,7 +9,7 @@ import org.zeromq.ZMQ;
 /**
  * Concrete implementation of {@link AbstractChannelListener} which relies on ZeroMQ for communication.
  */
-public class ZmqChannelListener<T> extends AbstractChannelListener<T> {
+public class ZmqChannelListener extends AbstractChannelListener {
 
     private int type;
     private ZMQ.Socket socket;
@@ -24,7 +24,7 @@ public class ZmqChannelListener<T> extends AbstractChannelListener<T> {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint<T> endpoint, String address, int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+    public ZmqChannelListener(Endpoint endpoint, String address, int port, int type, MessageHandlerFactory messageHandlerFactory) {
         this(endpoint, type, messageHandlerFactory);
         Peer peer = new Peer(address, port);
         this.peers.add(peer);
@@ -38,7 +38,7 @@ public class ZmqChannelListener<T> extends AbstractChannelListener<T> {
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public ZmqChannelListener(Endpoint<T> endpoint, int type, MessageHandlerFactory<T> messageHandlerFactory) {
+    public ZmqChannelListener(Endpoint endpoint, int type, MessageHandlerFactory messageHandlerFactory) {
         super(endpoint, messageHandlerFactory);
         this.type = type;
     }
