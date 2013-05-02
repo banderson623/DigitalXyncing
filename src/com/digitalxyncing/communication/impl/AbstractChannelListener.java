@@ -13,11 +13,11 @@ import java.util.concurrent.Executors;
 /**
  * Abstract implementation of {@link ChannelListener}.
  */
-public abstract class AbstractChannelListener<T> extends Thread implements ChannelListener<T> {
+public abstract class AbstractChannelListener extends Thread implements ChannelListener {
 
-    protected final Endpoint<T> endpoint;
+    protected final Endpoint endpoint;
     protected final ExecutorService threadPool;
-    protected final MessageHandlerFactory<T> messageHandlerFactory;
+    protected final MessageHandlerFactory messageHandlerFactory;
     protected Set<Peer> peers;
     protected volatile boolean terminate;
 
@@ -28,7 +28,7 @@ public abstract class AbstractChannelListener<T> extends Thread implements Chann
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public AbstractChannelListener(Endpoint<T> endpoint, MessageHandlerFactory<T> messageHandlerFactory) {
+    public AbstractChannelListener(Endpoint endpoint, MessageHandlerFactory messageHandlerFactory) {
         this(endpoint, 1, messageHandlerFactory);
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractChannelListener<T> extends Thread implements Chann
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use to construct
      *                              {@link com.digitalxyncing.communication.MessageHandler} instances
      */
-    public AbstractChannelListener(Endpoint<T> endpoint, int threadMultiplier, MessageHandlerFactory<T> messageHandlerFactory) {
+    public AbstractChannelListener(Endpoint endpoint, int threadMultiplier, MessageHandlerFactory messageHandlerFactory) {
         this.endpoint = endpoint;
         this.messageHandlerFactory = messageHandlerFactory;
         // Message handling operations are probably CPU-bound, so allocate 1 thread per core by default

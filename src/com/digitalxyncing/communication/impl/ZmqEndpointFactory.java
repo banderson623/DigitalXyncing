@@ -11,8 +11,8 @@ import java.net.Socket;
 public class ZmqEndpointFactory implements EndpointFactory {
 
     @Override
-    public <T> Endpoint<T> buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token, Class<T> type,
-                                               MessageHandlerFactory<T> messageHandlerFactory) {
+    public Endpoint buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token,
+                                               MessageHandlerFactory messageHandlerFactory) {
         int hostSharePort = 0;
         int port = 0;
         Socket socket = null;
@@ -48,18 +48,18 @@ public class ZmqEndpointFactory implements EndpointFactory {
                 e.printStackTrace();
             }
         }
-        return new ZmqClientEndpoint<T>(hostAddress, hostSharePort, port, messageHandlerFactory);
+        return new ZmqClientEndpoint(hostAddress, hostSharePort, port, messageHandlerFactory);
     }
 
     @Override
-    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
-        return new ZmqHostEndpoint<T>(port, messageHandlerFactory);
+    public HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory) {
+        return new ZmqHostEndpoint(port, messageHandlerFactory);
     }
 
     @Override
-    public <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory,
+    public HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory,
                                                  Authenticator
             authenticator) {
-        return new ZmqHostEndpoint<T>(port, messageHandlerFactory, authenticator);
+        return new ZmqHostEndpoint(port, messageHandlerFactory, authenticator);
     }
 }

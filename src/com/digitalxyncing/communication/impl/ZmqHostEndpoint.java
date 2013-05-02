@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  * Implementation of {@link HostEndpoint} which represents the notion of a "host" in a distributed client-host cluster
  * application. This implementation relies on ZeroMQ for communication.
  */
-public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEndpoint<T> {
+public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint implements HostEndpoint {
 
     private ConnectionManager connectionManager;
     private Authenticator authenticator;
@@ -34,7 +34,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
      * @param port                  the port to bind to
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      */
-    public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory) {
+    public ZmqHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory) {
         super(port, ZMQ.PULL, messageHandlerFactory);
         discoveryPort = 0;
         connectionManager = new ConnectionManager();
@@ -48,7 +48,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      * @param authenticator         the {@link Authenticator} to use to authenticate connection requests
      */
-    public ZmqHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory, Authenticator authenticator) {
+    public ZmqHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory, Authenticator authenticator) {
         this(port, messageHandlerFactory);
         this.authenticator = authenticator;
     }
@@ -60,7 +60,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
      * @param discoveryPort         the port to bind to for listening for connection requests
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      */
-    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory<T> messageHandlerFactory) {
+    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory messageHandlerFactory) {
         super(port, ZMQ.PULL, messageHandlerFactory);
         this.discoveryPort = discoveryPort;
     }
@@ -73,7 +73,7 @@ public class ZmqHostEndpoint<T> extends AbstractZmqEndpoint<T> implements HostEn
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use for handling incoming messages
      * @param authenticator         the {@link Authenticator} to use to authenticate connection requests
      */
-    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory<T> messageHandlerFactory,
+    public ZmqHostEndpoint(int port, int discoveryPort, MessageHandlerFactory messageHandlerFactory,
                            Authenticator authenticator) {
         super(port, ZMQ.PULL, messageHandlerFactory);
         this.discoveryPort = discoveryPort;

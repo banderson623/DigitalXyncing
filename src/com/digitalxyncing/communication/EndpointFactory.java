@@ -2,11 +2,11 @@ package com.digitalxyncing.communication;
 
 public interface EndpointFactory {
 
-    <T> Endpoint<T> buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token, Class<T> type,
-                                        MessageHandlerFactory<T> messageHandlerFactory);
+    Endpoint buildClientEndpoint(String hostAddress, int hostDiscoveryPort, String token,
+                                 MessageHandlerFactory messageHandlerFactory);
 
-    <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory);
+    HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory);
 
-    <T> HostEndpoint<T> buildHostEndpoint(int port, MessageHandlerFactory<T> messageHandlerFactory,
-                                          Authenticator authenticator);
+    HostEndpoint buildHostEndpoint(int port, MessageHandlerFactory messageHandlerFactory,
+                                   Authenticator authenticator);
 }

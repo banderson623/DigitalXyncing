@@ -10,9 +10,9 @@ import java.util.UUID;
 /**
  * Abstract implementation of {@link com.digitalxyncing.communication.Endpoint} containing common code for ZeroMQ implementations.
  */
-public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
+public abstract class AbstractZmqEndpoint implements Endpoint {
 
-    protected AbstractChannelListener<T> abstractChannelListener;
+    protected AbstractChannelListener abstractChannelListener;
     protected ZMQ.Socket socket;
     protected int port;
     protected String id;
@@ -27,8 +27,8 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
      * @param type                  the ZMQ socket type
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener<T>(this, hostAddress, hostPort, type, messageHandlerFactory);
+    public AbstractZmqEndpoint(String hostAddress, int hostPort, int port, int type, MessageHandlerFactory messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener(this, hostAddress, hostPort, type, messageHandlerFactory);
         this.port = port;
         this.id = UUID.randomUUID().toString();
     }
@@ -39,8 +39,8 @@ public abstract class AbstractZmqEndpoint<T> implements Endpoint<T> {
      * @param type                  the ZMQ socket type
      * @param messageHandlerFactory the {@link MessageHandlerFactory} to use
      */
-    public AbstractZmqEndpoint(int port, int type, MessageHandlerFactory<T> messageHandlerFactory) {
-        this.abstractChannelListener = new ZmqChannelListener<T>(this, type, messageHandlerFactory);
+    public AbstractZmqEndpoint(int port, int type, MessageHandlerFactory messageHandlerFactory) {
+        this.abstractChannelListener = new ZmqChannelListener(this, type, messageHandlerFactory);
         this.port = port;
         this.id = UUID.randomUUID().toString();
     }

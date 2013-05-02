@@ -8,17 +8,17 @@ import com.digitalxyncing.document.Message.MessageType;
  * It implements {@link Runnable} so that it can be executed within the context of a worker thread
  * asynchronously.
  */
-public abstract class MessageHandler<T> implements Runnable {
+public abstract class MessageHandler implements Runnable {
 
     private final byte[] message;
-    protected Endpoint<T> endpoint;
+    protected Endpoint endpoint;
 
     /**
      * Creates a new {@code MessageHandler} instance.
      *
      * @param message the message to handle
      */
-    public MessageHandler(Endpoint<T> endpoint, byte[] message) {
+    public MessageHandler(Endpoint endpoint, byte[] message) {
         this.endpoint = endpoint;
         this.message = message;
     }

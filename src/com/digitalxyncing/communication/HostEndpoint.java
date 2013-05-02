@@ -4,7 +4,7 @@ package com.digitalxyncing.communication;
  * {@code HostEndpoint} represents the notion of a "host" in a distributed client-host
  * cluster application.
  */
-public interface HostEndpoint<T> extends Endpoint<T> {
+public interface HostEndpoint extends Endpoint {
 
     /**
      * Adds the given client, identified by an address and port, to the {@code HostEndpoint}.

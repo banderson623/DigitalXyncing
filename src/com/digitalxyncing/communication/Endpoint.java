@@ -6,7 +6,7 @@ import com.digitalxyncing.document.Message;
  * An {@code Endpoint} is a single node in the application cluster. It has the ability to both transmit and receive
  * messages.
  */
-public interface Endpoint<T> {
+public interface Endpoint {
 
     public static final String SCHEME = "tcp://";
 
