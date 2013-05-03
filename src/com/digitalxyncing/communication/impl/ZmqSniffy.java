@@ -18,15 +18,14 @@ import java.util.concurrent.*;
  */
 public class ZmqSniffy implements Sniffy {
 
-    @Override
-    public List<String> discoverXyncersOnPort(final int portNumber)
+    private List<String> discoverXyncersOnSubnetFromIPOnPort(final String IPAddress, final int portNumber)
     {
-        System.out.println("Starting session discovery");
+        System.out.println("Starting session discovery | discoverXyncersOnSubnetFromIPOnPort");
         List<String> foundHosts = new ArrayList<String>(255);
         try
         {
             // get my IP address
-            String myIpAddress = InetAddress.getLocalHost().getHostAddress();
+            final String myIpAddress = IPAddress;
             // find where the last octect starts (192.168.0 <--- right here )
             int lastOctetIndex = myIpAddress.lastIndexOf('.');
 
@@ -49,15 +48,14 @@ public class ZmqSniffy implements Sniffy {
             exec.shutdown();
             for (final Future<FoundHost> f : futures) {
                 FoundHost host = f.get();
-                if(host.wasFound){
+                // If we found a host and it is not US :)
+                if(host.wasFound){ // && host.ip != myIpAddress){
                     foundHosts.add(host.ip);
                 }
             }
         }
-        catch (UnknownHostException e)
-        {
-            // do nothing...
-        } catch (InterruptedException e)
+
+        catch (InterruptedException e)
         {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ExecutionException e)
@@ -67,6 +65,51 @@ public class ZmqSniffy implements Sniffy {
 
         System.out.println("Finished session discovery");
         return foundHosts;
+    }
+
+
+            @Override
+    public List<String> discoverXyncersOnPort(final int portNumber)
+    {
+        List<String> foundHosts = new ArrayList<String>(255);
+
+        try
+        {
+            String myIp = InetAddress.getLocalHost().getHostAddress();
+            foundHosts.addAll(discoverXyncersOnSubnetFromIPOnPort(myIp,portNumber));
+        } catch (UnknownHostException ignore){
+        }
+        return foundHosts;
+
+    }
+
+    @Override
+    public void discoverXyncersOnMySubnetAndFromListOfIPsAndPort(final List<String> listOfOtherIps,
+                                                                 final int portNumber,
+                                                                 final HostListCallBack callBack)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Add discovered on my own subnet, and others
+                List<String> foundHosts = discoverXyncersOnPort(portNumber);
+                List<String> otherHosts = new ArrayList<String>();
+                for(String ipAddress : listOfOtherIps){
+                    otherHosts.addAll(discoverXyncersOnSubnetFromIPOnPort(ipAddress,portNumber));
+
+                }
+
+                // Make sure there are no duplicates
+                for(String other : otherHosts){
+                    if(!foundHosts.contains(other)){
+                        foundHosts.add(other);
+                    }
+                }
+
+                callBack.results(foundHosts);
+            }
+        }).start();
     }
 
     @Override
